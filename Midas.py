@@ -26,8 +26,8 @@ Mouse_Prev_Pt = (0, 0)
 
 SELECTED_ITEM = None
 
-WIDTH = 800
-HEIGHT = 480
+WIDTH = 320
+HEIGHT = 240
 
 WIN_W = WIDTH + 320
 WIN_H = HEIGHT + 240
