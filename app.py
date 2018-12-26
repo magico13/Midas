@@ -41,9 +41,9 @@ class App(object):
     return
     
   def EventLoop(self, events):
-  #  for event in events:
-  #    if event.type == pygame.MOUSEBUTTONDOWN:
-  #      self.MouseClick(pygame.mouse.get_pos())
+    for event in events:
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        self.MouseClick(pygame.mouse.get_pos())
     return
     
   def GetButtonByID(self, btnID):

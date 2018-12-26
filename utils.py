@@ -221,14 +221,13 @@ def load(inst, path):
         callback = None
         if callbackTxt != 'None' and inst:
             callback = getattr(inst, callbackTxt)
-        print(callbackTxt)
-        print(callback)
+        #print(callbackTxt)
+        #print(callback)
         button = Button(b['name'], pos, size, color, b['text'], textColor, callback, b['textSize'])
         if not inst and callbackTxt != 'None':
             button.CallbackTxt = callbackTxt
-            print('Setting CallbackTxt value')
+            #print('Setting CallbackTxt value')
         buttons.append(button)
-        #TODO: How do we handle the onClick action? Sure we can specify a name, but can we get a function from that? https://stackoverflow.com/questions/3061/calling-a-function-of-a-module-by-using-its-name-a-string
         
     for t in filedata['texts']:
         #name, text, position, height=36, color=(0, 0, 0)):
