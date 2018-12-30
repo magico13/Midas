@@ -32,6 +32,8 @@ HEIGHT = 480
 WIN_W = WIDTH + 320
 WIN_H = HEIGHT + 240
 
+CopyBuffer = False
+
 #utils.ACTIVE_TXTFIELD = None
 
 #Keyboard modes
@@ -194,13 +196,15 @@ def DrawScreen(screen):
         pygame.draw.rect(screen, COLORS.CYAN, (TupleMath(Mouse_Prev_Pt, (160, 120), True),  TupleMath(pygame.mouse.get_pos(), Mouse_Prev_Pt, True)))
 
 def EVENTLOOP():
-    #global SELECTED_ITEM
+    global CopyBuffer
     #handle the arrow keys
     keys = pygame.key.get_pressed()
-    if (keys[K_UP] or keys[K_DOWN] or keys[K_LEFT] or keys[K_RIGHT]) and SELECTED_ITEM != None:
+    if (keys[K_UP] or keys[K_DOWN] or keys[K_LEFT] or keys[K_RIGHT] or keys[K_c]) and SELECTED_ITEM != None:
         #move or size up
         mods = pygame.key.get_mods()
         MoveOrSizeObject(mods, keys)
+        if keys[K_c] and (mods & KMOD_CTRL): CopyObject()
+    else: CopyBuffer = False
     
     events = pygame.event.get()
     for event in events:
@@ -262,36 +266,17 @@ def EVENTLOOP():
                 MouseMode = M_BTN_ACTIVE
             elif (MouseMode == M_BTN_ACTIVE and InScreen(mousePos)):
                 #get last pos and this pos, make a new button
-                
-                holder = len(ScreenButtons)
-                taken = True
-                while taken:
-                #generate a unique name
-                    btnName = "btn"+str(holder)
-                    #taken = (GetButton(btnName) is not None)
-                    taken = False
-                    for btn in ScreenButtons:
-                        if btn.NAME == btnName: taken = True
-                    holder += 1
-                    
-                ScreenButtons.append(utils.Button(btnName, TupleMath(Mouse_Prev_Pt, (160, 120), True), TupleMath(mousePos, Mouse_Prev_Pt, True), onClick=SelectScreenBtn))
+                pos = TupleMath(Mouse_Prev_Pt, (160, 120), True)
+                size = TupleMath(mousePos, Mouse_Prev_Pt, True)
+                btnName = CreateButton(pos, size)
                 MouseMode = M_NORMAL
                 print("finished button "+btnName)
                 Texts[0].SetText("N/A")
                 SelectScreenBtn(btnName)
                 
             elif (MouseMode == M_TXT_START and InScreen(mousePos)):
-                holder = len(ScreenTexts)
-                taken = True
-                while taken:
-                #generate a unique name
-                    txtName = "txt"+str(holder)
-                    taken = False
-                    for txt in ScreenTexts:
-                        if txt.NAME == txtName: taken = True
-                    holder += 1
-                    
-                ScreenTexts.append(utils.Text(txtName, txtName, TupleMath(mousePos, (160, 120), True), 36, COLORS.WHITE))
+                pos = TupleMath(mousePos, (160, 120), True)
+                txtName = CreateText(pos)
                 MouseMode = M_NORMAL
                 print("finished text "+txtName)
                 Texts[0].SetText("N/A")
@@ -424,6 +409,30 @@ def MoveOrSizeObject(mods, keys):
             #move
             SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (step, 0), False)
 
+def CopyObject():
+    #get the selected item, make a duplicate
+    global CopyBuffer
+    if CopyBuffer: return None
+    CopyBuffer = True
+    copy = None
+    isButton = isinstance(SELECTED_ITEM, utils.Button)
+    if isButton:
+        copyName = CreateButton(TupleMath(SELECTED_ITEM.POS, (10, 0), False), SELECTED_ITEM.SIZE)
+        copy = GetScreenButton(copyName)
+        copy.CallbackTxt = SELECTED_ITEM.CallbackTxt
+        copy.TXTCOLOR = SELECTED_ITEM.TXTCOLOR
+        copy.TXTSIZE = SELECTED_ITEM.TXTSIZE
+    else:
+        copyName = CreateText(TupleMath(SELECTED_ITEM.POS, (10, 0), False))
+        copy = GetScreenText(copyName)
+        copy.HT = SELECTED_ITEM.HT
+    #these items are common between both types
+    copy.TXT = SELECTED_ITEM.TXT
+    copy.COLOR = SELECTED_ITEM.COLOR
+    if isButton: SelectScreenBtn(copy.NAME)
+    else: SelectScreenTxt(copy.NAME)
+    return copy
+
 def SetActiveTxtField(text):
     utils.ACTIVE_TXTFIELD = text
     utils.KeyMode = K_TEXT_ENTER
@@ -432,6 +441,44 @@ def SetActiveTxtField(text):
 def IsActiveTxtField(name):
     if utils.ACTIVE_TXTFIELD == None: return False
     return utils.ACTIVE_TXTFIELD.NAME == name
+
+def CreateButton(position, size):
+    holder = len(ScreenButtons)
+    taken = True
+    while taken:
+    #generate a unique name
+        btnName = "btn"+str(holder)
+        taken = False
+        for btn in ScreenButtons:
+            if btn.NAME == btnName: taken = True
+        holder += 1
+    ScreenButtons.append(utils.Button(btnName, position, size, onClick=SelectScreenBtn))
+    return btnName
+    
+def CreateText(position):
+    holder = len(ScreenTexts)
+    taken = True
+    while taken:
+    #generate a unique name
+        txtName = "txt"+str(holder)
+        taken = False
+        for txt in ScreenTexts:
+            if txt.NAME == txtName: taken = True
+        holder += 1
+    ScreenTexts.append(utils.Text(txtName, txtName, position, 36, COLORS.WHITE))
+    return txtName
+
+def GetScreenButton(btnName):
+    for button in ScreenButtons:
+        if (button.NAME == btnName):
+            return button
+    return None
+    
+def GetScreenText(txtName):
+    for txt in ScreenTexts:
+        if (txt.NAME == txtName):
+            return txt
+    return None
 
 ## Button Callbacks ##
 def ChangeScreenBackground(btnName):
@@ -465,24 +512,20 @@ def NewTxtFn(btnName):
 
 def SelectScreenBtn(btnName):
     global SELECTED_ITEM
-    for button in ScreenButtons:
-        if (button.NAME == btnName):
-            if (SELECTED_ITEM != None and not isinstance(SELECTED_ITEM, utils.Button)):
-                SetColorButtons(False)
-            SELECTED_ITEM = button
-            print("Selected button: "+SELECTED_ITEM.NAME)
-            SetColorButtons(True)
-            break
+    button = GetScreenButton(btnName)
+    if (SELECTED_ITEM != None and not isinstance(SELECTED_ITEM, utils.Button)):
+        SetColorButtons(False)
+    SELECTED_ITEM = button
+    print("Selected button: "+SELECTED_ITEM.NAME)
+    SetColorButtons(True)
 
 def SelectScreenTxt(txtName):
     global SELECTED_ITEM
-    for txt in ScreenTexts:
-        if (txt.NAME == txtName):
-            if (SELECTED_ITEM != None and not isinstance(SELECTED_ITEM, utils.Text)):
-                SetColorButtons(False)
-            SELECTED_ITEM = txt
-            SetColorButtons(True, False)
-            break
+    txt = GetScreenText(txtName)
+    if (SELECTED_ITEM != None and not isinstance(SELECTED_ITEM, utils.Text)):
+        SetColorButtons(False)
+    SELECTED_ITEM = txt
+    SetColorButtons(True, False)
             
 def ChangeActiveItemColor(btnName):
     global SELECTED_ITEM
