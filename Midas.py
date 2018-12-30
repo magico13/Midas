@@ -571,7 +571,7 @@ def SaveApp(btnID):
         writeline(f, "\tdef FirstDraw(self, screen):")      
         #Draw background
         writeline(f, "\t\t#Draw the background")
-        writeline(f, "\t\tbackground = pygame.Surface((320, 240))")
+        writeline(f, "\t\tbackground = pygame.Surface(screen.get_size())")
         writeline(f, "\t\tbackground.fill({0})".format(bkColor))
         writeline(f, "\t\tscreen.blit(background, (0, 0))")
         
