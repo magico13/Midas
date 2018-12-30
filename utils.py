@@ -25,7 +25,7 @@ class Button(object):
         
     def Draw(self, surf, justification = "center"):
         if not self.VISIBLE: return self
-        pygame.draw.rect(surf, self.COLOR, (self.POS, self.SIZE))
+        if self.COLOR != None: pygame.draw.rect(surf, self.COLOR, (self.POS, self.SIZE))
         if self.TXT != "":
             font = pygame.font.Font(None, self.TXTSIZE) #TODO: Figure out a way to auto-size the text
             text = font.render(self.TXT, 1, self.TXTCOLOR)
@@ -77,13 +77,16 @@ class Text(object):
         text = self.FONT.render(self.TXT, 1, self.COLOR)
         textPos = text.get_rect(left=self.POS[0], top=self.POS[1])
         surf.blit(text, textPos)
+        return self
     
-    def Center(self, pt):
+    def Center(self, pt, vertical=True, horizontal=True):
         self.FONT = pygame.font.Font(None, self.HT)
         text = self.FONT.render(self.TXT, 1, self.COLOR)
         textPos = text.get_rect(left=self.POS[0], top=self.POS[1])
-        newLeft = pt[0]-(textPos.width/2)
-        newTop = pt[1] - (textPos.height/2)
+        newLeft = self.POS[0]
+        newTop = self.POS[1]
+        if horizontal: newLeft = pt[0]-(textPos.width/2)
+        if vertical: newTop = pt[1] - (textPos.height/2)
         self.POS = (newLeft, newTop)
     
     def SetText(self, text):
@@ -99,6 +102,9 @@ class Text(object):
         textPos = text.get_rect(left=self.POS[0], top=self.POS[1])
         return textPos.collidepoint(mousePos)
         
+    def GetRect(self):
+        text = self.FONT.render(self.TXT, 1, self.COLOR)
+        return text.get_rect(left=self.POS[0], top=self.POS[1])
         
 class TextPopup(Text):
     def __init__(self, text, timeout=10, size=36, color=COLORS.WHITE, backgroundColor=COLORS.BLACK):

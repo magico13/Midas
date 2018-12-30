@@ -8,7 +8,7 @@ from pygame.locals import *
 import utils
 from utils import COLORS
 
-AppName = "New_App"
+AppName = "App_NEW"
 
 LoadFile = "load.json"
 
@@ -26,8 +26,8 @@ Mouse_Prev_Pt = (0, 0)
 
 SELECTED_ITEM = None
 
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 800
+HEIGHT = 480
 
 WIN_W = WIDTH + 320
 WIN_H = HEIGHT + 240
@@ -138,7 +138,10 @@ def DrawFull(window, screen):
     #draw the pseudo status bar
     #StatusBarSurf = pygame.Surface((320, 10))
     #StatusBarSurf.fill(COLORS.WHITE)
-    #screen.blit(StatusBarSurf, (0, 0))        
+    #screen.blit(StatusBarSurf, (0, 0))
+    StatusBarSurf = pygame.Surface((800, 40))
+    StatusBarSurf.fill(COLORS.WHITE)
+    screen.blit(StatusBarSurf, (0, 440))
     
     #draw the home button
     #homeBtn = utils.Button("btnHome", (0, 0), (50, 10), COLORS.RED, "HOME", COLORS.WHITE, None)
@@ -390,34 +393,36 @@ def SetColorButtons(state, btn=True):
 
 def MoveOrSizeObject(mods, keys):
     global SELECTED_ITEM
+    step = 1
+    if (mods & KMOD_SHIFT): step = 10
     if (keys[K_UP]):
         if (mods & KMOD_CTRL and isinstance(SELECTED_ITEM, utils.Button)):
             #size up
-            SELECTED_ITEM.SIZE = TupleMath(SELECTED_ITEM.SIZE, (0, 1), True)
+            SELECTED_ITEM.SIZE = TupleMath(SELECTED_ITEM.SIZE, (0, step), True)
         else:
             #move up
-            SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (0, 1), True)
+            SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (0, step), True)
     if (keys[K_DOWN]):
         if (mods & KMOD_CTRL and isinstance(SELECTED_ITEM, utils.Button)):
             #size
-            SELECTED_ITEM.SIZE = TupleMath(SELECTED_ITEM.SIZE, (0, 1), False)
+            SELECTED_ITEM.SIZE = TupleMath(SELECTED_ITEM.SIZE, (0, step), False)
         else:
             #move
-            SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (0, 1), False)
+            SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (0, step), False)
     if (keys[K_LEFT]):
         if (mods & KMOD_CTRL and isinstance(SELECTED_ITEM, utils.Button)):
             #size
-            SELECTED_ITEM.SIZE = TupleMath(SELECTED_ITEM.SIZE, (1, 0), True)
+            SELECTED_ITEM.SIZE = TupleMath(SELECTED_ITEM.SIZE, (step, 0), True)
         else:
             #move
-            SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (1, 0), True)
+            SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (step, 0), True)
     if (keys[K_RIGHT]):
         if (mods & KMOD_CTRL and isinstance(SELECTED_ITEM, utils.Button)):
             #size
-            SELECTED_ITEM.SIZE = TupleMath(SELECTED_ITEM.SIZE, (1, 0), False)
+            SELECTED_ITEM.SIZE = TupleMath(SELECTED_ITEM.SIZE, (step, 0), False)
         else:
             #move
-            SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (1, 0), False)
+            SELECTED_ITEM.POS = TupleMath(SELECTED_ITEM.POS, (step, 0), False)
 
 def SetActiveTxtField(text):
     utils.ACTIVE_TXTFIELD = text
@@ -521,7 +526,6 @@ def SaveApp(btnID):
     data['buttons'] = []
     data['texts'] = []
     for b in ScreenButtons:
-        callbacktxt = "None"
         if (not hasattr(b, "CallbackTxt")):
             b.CallbackTxt = "None"
         bjson = {}
@@ -532,7 +536,7 @@ def SaveApp(btnID):
         bjson['text'] = b.TXT
         bjson['textColor'] = b.TXTCOLOR
         bjson['textSize'] = b.TXTSIZE
-        bjson['callback'] = callbacktxt
+        bjson['callback'] = b.CallbackTxt
         data['buttons'].append(bjson)
     
     #Add Texts
@@ -604,4 +608,4 @@ PyClock = pygame.time.Clock()
 while True:
     EVENTLOOP()
     DrawFull(window, screen)
-    PyClock.tick(5) #keep the framerate at a reasonable limit
+    PyClock.tick(30) #keep the framerate at a reasonable limit

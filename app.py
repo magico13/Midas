@@ -23,18 +23,6 @@ class App(object):
         self.PopUps.remove(popup)
     return worked
     
-  def Button_Release_1(self): #fired on button 1 release (#17)
-    return
-    
-  def Button_Release_2(self): #fired on button 2 release (#22)
-    return
-    
-  def Button_Release_3(self): #fired on button 3 release (#23)
-    return
-    
-  def Button_Release_4(self): #fired on button 4 release (#27)
-    return
-    
   def MouseClick(self, mousePos):
     for button in self.Buttons:
       button.Check(mousePos)
@@ -45,6 +33,12 @@ class App(object):
       if event.type == pygame.MOUSEBUTTONDOWN:
         self.MouseClick(pygame.mouse.get_pos())
     return
+    
+  def BackgroundEventLoop(self, events):
+    return
+  
+  def OnClosed(self):
+    return False
     
   def GetButtonByID(self, btnID):
     for b in self.Buttons:
