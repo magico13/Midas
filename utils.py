@@ -9,7 +9,10 @@ class COLORS:
     BLUE=(0, 0, 255)
     CYAN=(0, 255, 255)
     MAGENTA=(255, 0, 255)
-    YELLOW=(255, 255, 0) 
+    YELLOW=(255, 255, 0)
+    GRAY=(127, 127, 127)
+    LIGHT_GRAY=(160, 160, 160)
+    DARK_GRAY=(94, 94, 94)
     
 class Button(object):
     def __init__(self, name, position, size, color=(0,0,255), text="", textColor=(255, 255, 255), onClick=None, txtSize = 36):
@@ -115,7 +118,6 @@ class TextPopup(Text):
         self.FONT = pygame.font.Font(None, self.HT)
         self.VISIBLE = True
         self.POS = (0, 0)
-        self.Center((160, 120))
         self.TIME = timeout
         self.COUNTER = 0
         
@@ -123,6 +125,8 @@ class TextPopup(Text):
     def Activate(self, surf):
         self.BACKUP = surf.copy()
         surf.fill(self.BACKCOLOR)
+        size = surf.get_size()
+        self.Center((size[0]/2, size[1]/2))
         super(TextPopup, self).Draw(surf)
         self.COUNTER = 0
         self.VISIBLE = True

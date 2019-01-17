@@ -48,10 +48,16 @@ def init(window):
     Texts.append(utils.Text("na", "N/A", (0, WIN_H-20), 24, COLORS.RED))
     #background color buttons
     Texts.append(utils.Text("txtBkColor", "Bk Color", (0, 0), 24))
-    x=64
+    x=70
+    Buttons.append(utils.Button("bkBlack", (x, 0), (16, 16), COLORS.BLACK, onClick=ChangeScreenBackground))
+    x+=16
     Buttons.append(utils.Button("bkWhite", (x, 0), (16, 16), COLORS.WHITE, onClick=ChangeScreenBackground))
     x+=16
-    Buttons.append(utils.Button("bkBlack", (x, 0), (16, 16), COLORS.BLACK, onClick=ChangeScreenBackground))
+    Buttons.append(utils.Button("bkGray", (x, 0), (16, 16), COLORS.GRAY, onClick=ChangeScreenBackground))
+    x+=16
+    Buttons.append(utils.Button("bkLightGray", (x, 0), (16, 16), COLORS.LIGHT_GRAY, onClick=ChangeScreenBackground))
+    x+=16
+    Buttons.append(utils.Button("bkDarkGray", (x, 0), (16, 16), COLORS.DARK_GRAY, onClick=ChangeScreenBackground))
     x+=16
     Buttons.append(utils.Button("bkRed", (x, 0), (16, 16), COLORS.RED, onClick=ChangeScreenBackground))
     x+=16
@@ -71,13 +77,23 @@ def init(window):
     Buttons.append(utils.Button("btnNewTxt", (0, 72), (80, 32), COLORS.BLACK, "New Txt", COLORS.WHITE, NewTxtFn, 24))
     
     
+    x=WIN_W-86
+    Buttons.append(utils.Button("btnBlack", (x, 184), (16, 16), COLORS.BLACK, onClick=ChangeActiveItemColor))
+    Buttons[len(Buttons)-1].SetVisible(False)
+    x+=16
+    Buttons.append(utils.Button("btnWhite", (x, 184), (16, 16), COLORS.WHITE, onClick=ChangeActiveItemColor))
+    Buttons[len(Buttons)-1].SetVisible(False)
+    x+=16
+    Buttons.append(utils.Button("btnGray", (x, 184), (16, 16), COLORS.GRAY, onClick=ChangeActiveItemColor))
+    Buttons[len(Buttons)-1].SetVisible(False)
+    x+=16
+    Buttons.append(utils.Button("btnLightGray", (x, 184), (16, 16), COLORS.LIGHT_GRAY, onClick=ChangeActiveItemColor))
+    Buttons[len(Buttons)-1].SetVisible(False)
+    x+=16
+    Buttons.append(utils.Button("btnDarkGray", (x, 184), (16, 16), COLORS.DARK_GRAY, onClick=ChangeActiveItemColor))
+    Buttons[len(Buttons)-1].SetVisible(False)
+
     x=WIN_W-150
-    Buttons.append(utils.Button("btnWhite", (x, 200), (16, 16), COLORS.WHITE, onClick=ChangeActiveItemColor))
-    Buttons[len(Buttons)-1].SetVisible(False)
-    x+=16
-    Buttons.append(utils.Button("btnBlack", (x, 200), (16, 16), COLORS.BLACK, onClick=ChangeActiveItemColor))
-    Buttons[len(Buttons)-1].SetVisible(False)
-    x+=16
     Buttons.append(utils.Button("btnRed", (x, 200), (16, 16), COLORS.RED, onClick=ChangeActiveItemColor))
     Buttons[len(Buttons)-1].SetVisible(False)
     x+=16
@@ -96,11 +112,21 @@ def init(window):
     Buttons.append(utils.Button("btnYellow", (x, 200), (16, 16), COLORS.YELLOW, onClick=ChangeActiveItemColor))
     Buttons[len(Buttons)-1].SetVisible(False)
     
-    x=WIN_W-150
-    Buttons.append(utils.Button("btnTxtWhite", (x, 280), (16, 16), COLORS.WHITE, onClick=ChangeActiveItemColor))
+    x=WIN_W-70
+    Buttons.append(utils.Button("btnTxtBlack", (x, 264), (16, 16), COLORS.BLACK, onClick=ChangeActiveItemColor))
     Buttons[len(Buttons)-1].SetVisible(False)
     x+=16
-    Buttons.append(utils.Button("btnTxtBlack", (x, 280), (16, 16), COLORS.BLACK, onClick=ChangeActiveItemColor))
+    Buttons.append(utils.Button("btnTxtWhite", (x, 264), (16, 16), COLORS.WHITE, onClick=ChangeActiveItemColor))
+    Buttons[len(Buttons)-1].SetVisible(False)
+    x+=16
+    Buttons.append(utils.Button("btnTxtGray", (x, 264), (16, 16), COLORS.GRAY, onClick=ChangeActiveItemColor))
+    Buttons[len(Buttons)-1].SetVisible(False)
+    x+=16
+    Buttons.append(utils.Button("btnTxtDarkGray", (x, 264), (16, 16), COLORS.DARK_GRAY, onClick=ChangeActiveItemColor))
+    Buttons[len(Buttons)-1].SetVisible(False)
+    
+    x=WIN_W-150
+    Buttons.append(utils.Button("btnTxtLightGray", (x, 280), (16, 16), COLORS.LIGHT_GRAY, onClick=ChangeActiveItemColor))
     Buttons[len(Buttons)-1].SetVisible(False)
     x+=16
     Buttons.append(utils.Button("btnTxtRed", (x, 280), (16, 16), COLORS.RED, onClick=ChangeActiveItemColor))
@@ -141,9 +167,9 @@ def DrawFull(window, screen):
     #StatusBarSurf = pygame.Surface((320, 10))
     #StatusBarSurf.fill(COLORS.WHITE)
     #screen.blit(StatusBarSurf, (0, 0))
-    StatusBarSurf = pygame.Surface((800, 40))
-    StatusBarSurf.fill(COLORS.WHITE)
-    screen.blit(StatusBarSurf, (0, 440))
+    #StatusBarSurf = pygame.Surface((800, 40))
+    #StatusBarSurf.fill(COLORS.WHITE)
+    #screen.blit(StatusBarSurf, (0, 440))
     
     #draw the home button
     #homeBtn = utils.Button("btnHome", (0, 0), (50, 10), COLORS.RED, "HOME", COLORS.WHITE, None)
@@ -359,6 +385,9 @@ def Deselect():
 def SetColorButtons(state, btn=True):
     GetButton("btnWhite").SetVisible(state)
     GetButton("btnBlack").SetVisible(state)
+    GetButton("btnGray").SetVisible(state)
+    GetButton("btnDarkGray").SetVisible(state)
+    GetButton("btnLightGray").SetVisible(state)
     GetButton("btnRed").SetVisible(state)
     GetButton("btnGreen").SetVisible(state)
     GetButton("btnBlue").SetVisible(state)
@@ -369,6 +398,9 @@ def SetColorButtons(state, btn=True):
     if btn or not state:
         GetButton("btnTxtWhite").SetVisible(state)
         GetButton("btnTxtBlack").SetVisible(state)
+        GetButton("btnTxtGray").SetVisible(state)
+        GetButton("btnTxtDarkGray").SetVisible(state)
+        GetButton("btnTxtLightGray").SetVisible(state)
         GetButton("btnTxtRed").SetVisible(state)
         GetButton("btnTxtGreen").SetVisible(state)
         GetButton("btnTxtBlue").SetVisible(state)
@@ -483,22 +515,7 @@ def GetScreenText(txtName):
 ## Button Callbacks ##
 def ChangeScreenBackground(btnName):
     global bkColor
-    if (btnName == "bkWhite"):
-        bkColor = COLORS.WHITE
-    elif (btnName == "bkBlack"):
-        bkColor = COLORS.BLACK
-    elif (btnName == "bkRed"):
-        bkColor = COLORS.RED
-    elif (btnName == "bkGreen"):
-        bkColor = COLORS.GREEN
-    elif (btnName == "bkBlue"):
-        bkColor = COLORS.BLUE
-    elif (btnName == "bkCyan"):
-        bkColor = COLORS.CYAN
-    elif (btnName == "bkMagenta"):
-        bkColor = COLORS.MAGENTA
-    elif (btnName == "bkYellow"):
-        bkColor = COLORS.YELLOW
+    bkColor = GetButton(btnName).COLOR
 
 def NewBtnFn(btnName):
     global MouseMode
@@ -529,39 +546,10 @@ def SelectScreenTxt(txtName):
             
 def ChangeActiveItemColor(btnName):
     global SELECTED_ITEM
-    if (btnName == "btnWhite"):
-        SELECTED_ITEM.COLOR = COLORS.WHITE
-    elif (btnName == "btnBlack"):
-        SELECTED_ITEM.COLOR = COLORS.BLACK
-    elif (btnName == "btnRed"):
-        SELECTED_ITEM.COLOR = COLORS.RED
-    elif (btnName == "btnGreen"):
-        SELECTED_ITEM.COLOR = COLORS.GREEN
-    elif (btnName == "btnBlue"):
-        SELECTED_ITEM.COLOR = COLORS.BLUE
-    elif (btnName == "btnCyan"):
-        SELECTED_ITEM.COLOR = COLORS.CYAN
-    elif (btnName == "btnMagenta"):
-        SELECTED_ITEM.COLOR = COLORS.MAGENTA
-    elif (btnName == "btnYellow"):
-        SELECTED_ITEM.COLOR = COLORS.YELLOW
-        
-    elif (btnName == "btnTxtWhite"):
-        SELECTED_ITEM.TXTCOLOR = COLORS.WHITE
-    elif (btnName == "btnTxtBlack"):
-        SELECTED_ITEM.TXTCOLOR = COLORS.BLACK
-    elif (btnName == "btnTxtRed"):
-        SELECTED_ITEM.TXTCOLOR = COLORS.RED
-    elif (btnName == "btnTxtGreen"):
-        SELECTED_ITEM.TXTCOLOR = COLORS.GREEN
-    elif (btnName == "btnTxtBlue"):
-        SELECTED_ITEM.TXTCOLOR = COLORS.BLUE
-    elif (btnName == "btnTxtCyan"):
-        SELECTED_ITEM.TXTCOLOR = COLORS.CYAN
-    elif (btnName == "btnTxtMagenta"):
-        SELECTED_ITEM.TXTCOLOR = COLORS.MAGENTA
-    elif (btnName == "btnTxtYellow"):
-        SELECTED_ITEM.TXTCOLOR = COLORS.YELLOW
+    if (not 'btnTxt' in btnName):
+        SELECTED_ITEM.COLOR = GetButton(btnName).COLOR
+    else:
+        SELECTED_ITEM.TXTCOLOR = GetButton(btnName).COLOR
     
 def SaveApp(btnID):
     print("Saving .json")
