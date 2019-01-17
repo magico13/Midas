@@ -1,12 +1,14 @@
 # The point of this program is to be a WYSIWYG App Builder
 # At the very least it should let you assign colors, buttons, and text
 
-import pygame, sys, os, time, json
+import pygame, os, time, json
 from pygame.locals import *
 
 
 import utils
 from utils import COLORS
+
+RUN = True
 
 AppName = "App_NEW"
 
@@ -236,8 +238,8 @@ def EVENTLOOP():
     for event in events:
         if event.type == QUIT:
             print("Shutting down")
-            pygame.quit()
-            sys.exit()
+            global RUN
+            RUN = False
         elif event.type == pygame.KEYDOWN:
             key = event.key
             if key == K_DELETE and SELECTED_ITEM != None:
@@ -636,7 +638,8 @@ screen.fill(bkColor)
 init(window)
 
 PyClock = pygame.time.Clock()
-while True:
-    EVENTLOOP()
+while RUN:
     DrawFull(window, screen)
+    EVENTLOOP()
     PyClock.tick(30) #keep the framerate at a reasonable limit
+pygame.quit()
