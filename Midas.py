@@ -28,8 +28,8 @@ Mouse_Prev_Pt = (0, 0)
 
 SELECTED_ITEM = None
 
-WIDTH = 800
-HEIGHT = 480
+WIDTH = 268
+HEIGHT = 440
 
 WIN_W = WIDTH + 320
 WIN_H = HEIGHT + 240
@@ -626,6 +626,7 @@ def writeline(filehandle, line):
     
 ## MAIN ##
 pygame.init()
+pygame.mixer.quit()
 window = pygame.display.set_mode((WIN_W, WIN_H), 0, 32)
 windowBack = pygame.Surface((WIN_W, WIN_H))
 windowBack.fill(COLORS.WHITE)
